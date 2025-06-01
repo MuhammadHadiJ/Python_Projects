@@ -1,0 +1,16 @@
+License Terms
+-------------
+
+You are allowed to:
+- Use this tool for personal or internal use
+- Modify it for personal use (if you have access to the source)
+
+You are NOT allowed to:
+- Redistribute this tool or any modified versions
+- Sell or upload this tool to other platforms or marketplaces
+- Claim authorship or ownership of this tool
+
+For redistribution or commercial use, please contact the developer for a proper license.
+
+Copyright © 2025 MHAD1
+All rights reserved.
