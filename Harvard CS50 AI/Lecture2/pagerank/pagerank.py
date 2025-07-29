@@ -109,8 +109,36 @@ def iterate_pagerank(corpus, damping_factor):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    
-    
+    Pages = list(corpus.keys())
+    dist = dict()
+
+    for i in Pages:
+        dist[i] = 1/len(Pages)
+    X = 0
+    while X < 3:
+        dist2 = dist.copy()
+        for i in Pages:
+            p1 = 1-damping_factor
+            p1 = p1/len(Pages)
+
+            PagesI = list()
+            for j in Pages:
+                OutboundLinks = list(corpus.get(j))
+                if i in OutboundLinks:
+                    PagesI.append(j)
+                elif len(OutboundLinks) == 0:
+                    PagesI.append(j)
+            p2 = 0
+
+            for q in PagesI:
+                if len(list(corpus.get(q))) > 0:
+                    p2 += dist[q]/len(list(corpus.get(q)))
+                else:
+                    p2 += dist[q]/len(Pages)
+            p2 *= damping_factor
+            PageRank = p1 + p2
+            dist2.update({i:PageRank})
+        dist = dist2.copy()
     raise NotImplementedError
 
 
