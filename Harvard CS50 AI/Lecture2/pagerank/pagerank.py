@@ -60,17 +60,32 @@ def transition_model(corpus, page, damping_factor):
     """
     PageOutgoings = corpus.get(page)
     dist = dict()
-    print(PageOutgoings)
-    d100 = damping_factor * 100
-    for i in range(SAMPLES):
-        dresult = random.randint(0,100)
-        #if dresult > d100:
-            #Random corpus selection
-        #else:
-            #Sampling Yay!
+    for i in PageOutgoings:
+        dist[i] = 0
+    eachsampleeffect = 1/SAMPLES
+    if len(PageOutgoings) >= 1:
+        for i in range(0,SAMPLES):
+            if random.random() > damping_factor:
+                #Random corpus selection
+                rnd = random.choice(list(corpus.keys()))
+                if rnd in dist:
+                    dist.update({rnd:dist.get(rnd)+eachsampleeffect})
+                else:
+                    dist[rnd] = eachsampleeffect
+            else:
+                #Sampling Yay!
+                rnd = random.choice(PageOutgoings)
+                dist.update({rnd:dist.get(rnd)+eachsampleeffect})
+    else:
+        #Random corpus selection
+        for i in range(0,SAMPLES):
+            rnd = random.choice(list(corpus.keys()))
+            if rnd in dist:
+                dist.update({rnd:dist.get(rnd)+eachsampleeffect})
+            else:
+                dist[rnd] = eachsampleeffect
 
-
-    #raise NotImplementedError
+    return dist
 
 
 def sample_pagerank(corpus, damping_factor, n):
@@ -94,6 +109,8 @@ def iterate_pagerank(corpus, damping_factor):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
+    
+    
     raise NotImplementedError
 
 
