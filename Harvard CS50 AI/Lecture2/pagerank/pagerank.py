@@ -97,6 +97,7 @@ def sample_pagerank(corpus, damping_factor, n):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
+    
     raise NotImplementedError
 
 
@@ -114,8 +115,7 @@ def iterate_pagerank(corpus, damping_factor):
 
     for i in Pages:
         dist[i] = 1/len(Pages)
-    X = 0
-    while X < 3:
+    while True:
         dist2 = dist.copy()
         for i in Pages:
             p1 = 1-damping_factor
@@ -138,6 +138,14 @@ def iterate_pagerank(corpus, damping_factor):
             p2 *= damping_factor
             PageRank = p1 + p2
             dist2.update({i:PageRank})
+        V = 0
+        for i in dist.keys():
+            if abs(dist.get(i) - dist2.get(i)) < 0.001:
+                V += 1
+        if V == len(list(dist.keys())):
+            return dist2
+        else:
+            V = 0
         dist = dist2.copy()
     raise NotImplementedError
 
