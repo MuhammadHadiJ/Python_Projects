@@ -58,34 +58,22 @@ def transition_model(corpus, page, damping_factor):
     linked to by `page`. With probability `1 - damping_factor`, choose
     a link at random chosen from all pages in the corpus.
     """
-    PageOutgoings = corpus.get(page)
-    dist = dict()
-    for i in PageOutgoings:
-        dist[i] = 0
-    eachsampleeffect = 1/SAMPLES
-    if len(PageOutgoings) >= 1:
-        for i in range(0,SAMPLES):
-            if random.random() > damping_factor:
-                #Random corpus selection
-                rnd = random.choice(list(corpus.keys()))
-                if rnd in dist:
-                    dist.update({rnd:dist.get(rnd)+eachsampleeffect})
-                else:
-                    dist[rnd] = eachsampleeffect
-            else:
-                #Sampling Yay!
-                rnd = random.choice(PageOutgoings)
-                dist.update({rnd:dist.get(rnd)+eachsampleeffect})
-    else:
-        #Random corpus selection
-        for i in range(0,SAMPLES):
-            rnd = random.choice(list(corpus.keys()))
-            if rnd in dist:
-                dist.update({rnd:dist.get(rnd)+eachsampleeffect})
-            else:
-                dist[rnd] = eachsampleeffect
+    
+    total_pages = len(corpus)
+    probabilities = dict()
+    links = corpus[page]
 
-    return dist
+    if links:
+        for Page in corpus:
+            probabilities[Page] = (1 - damping_factor) / total_pages
+            if Page in links:
+                probabilities[Page] += damping_factor / len(links)
+    else:
+        # Page has no outgoing links: treat it like it links to all pages
+        for Page in corpus:
+            probabilities[Page] = 1 / total_pages
+
+    return probabilities
 
 
 def sample_pagerank(corpus, damping_factor, n):
@@ -97,7 +85,18 @@ def sample_pagerank(corpus, damping_factor, n):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    
+
+    StartPage = random.choice(list(corpus.keys()))
+    weights = transition_model(corpus,StartPage,damping_factor)
+    dist = dict()
+    for i in corpus.keys():
+        dist[i] = 0
+    InfluencingAmount = 1/n
+    for i in range(n):
+        Page = random.choices(list(weights.keys()),list(weights.values()),k=1)[0]
+        dist.update({Page:dist.get(Page) + InfluencingAmount})
+        weights = transition_model(corpus,Page,damping_factor)
+    return dist
     raise NotImplementedError
 
 
